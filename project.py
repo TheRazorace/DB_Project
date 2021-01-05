@@ -56,27 +56,27 @@ def StartMenu(cursor):
     btn2 = (tk.Button(window, text="Δεδομένα Μέτρησης Παραγωγής", 
     command = lambda: ProductionStatsQueries(cursor, window,
     query1, query2, query3, query4, query5, results)))
-    btn2.place(x=50, y=230)
+    btn2.place(x=50, y=260)
     
     btn3 = (tk.Button(window, text="Δεδομένα Εταιρειών Παραγωγής", 
     command = lambda: CompaniesQueries(cursor, window,
     query1, query2, query3, query4, query5, results)))
-    btn3.place(x=50, y=280)
+    btn3.place(x=50, y=340)
     
     btn4 = (tk.Button(window, text="Δεδομένα Κατανάλωσης Περιοχών", 
     command = lambda: AreaQueries(cursor, window,
     query1, query2, query3, query4, query5, results)))
-    btn4.place(x=50, y=330)
+    btn4.place(x=50, y=420)
     
     btn5 = (tk.Button(window, text="Δεδομένα Μέτρησης Κατανάλωσης", 
     command = lambda: ConsumptionStatsQueries(cursor, window,
     query1, query2, query3, query4, query5, results)))
-    btn5.place(x=50, y=380)
+    btn5.place(x=50, y=500)
     
     btn6 = (tk.Button(window, text="Δεδομένα Τοπικών Υποσταθμών", 
     command = lambda: SubstationQueries(cursor, window,
     query1, query2, query3, query4, query5, results)))
-    btn6.place(x=50, y=430)
+    btn6.place(x=50, y=580)
     
     window.mainloop()
     
@@ -95,19 +95,19 @@ def ProductionQueries(cursor, window, query1, query2, query3, query4, query5, re
     query1.place(x=350, y=180)
     
     query2.configure(text = "Διεσπαρμένο query 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Διεσπαρμένο query 3", 
     command = lambda: TestQuery(cursor, results))
-    query3.place(x=350, y=280)
+    query3.place(x=350, y=340)
     
     query4.configure(text = "Διεσπαρμένο query 4", 
     command = lambda: TestQuery(cursor, results))
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
 
     query5.configure(text = "Διεσπαρμένο query 5", 
     command = lambda: TestQuery(cursor, results))
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
@@ -118,16 +118,16 @@ def ProductionStatsQueries(cursor, window, query1, query2, query3, query4, query
     query1.place(x=350, y=180)
     
     query2.configure(text = "Query μέτρησης παρ. 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Query μέτρησης παρ. 3")
-    query3.place(x=350, y=280)
+    query3.place(x=350, y=340)
     
     query4.configure(text = "Query μέτρησης παρ. 4")
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
     
     query5.configure(text = "Query μέτρησης παρ. 5")
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
@@ -138,16 +138,16 @@ def CompaniesQueries(cursor, window, query1, query2, query3, query4, query5, res
     query1.place(x=350, y=180)
     
     query2.configure(text = "Query εταιρείας 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Query εταιρείας 3")
-    query3.place(x=350, y=280)
+    query3.place(x=350, y=340)
     
     query4.configure(text = "Query εταιρείας 4")
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
     
     query5.configure(text = "Query εταιρείας 5")
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
@@ -159,16 +159,16 @@ def AreaQueries(cursor, window, query1, query2, query3, query4, query5, results)
     query1.place(x=350, y=180)
     
     query2.configure(text = "Query περιοχής 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Query περιοχής 3")
-    query3.place(x=350, y=280)
+    query3.place(x=350, y=340)
     
     query4.configure(text = "Query περιοχής 4")
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
     
     query5.configure(text = "Query περιοχής 5")
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
@@ -179,16 +179,16 @@ def ConsumptionStatsQueries(cursor, window, query1, query2, query3, query4, quer
     query1.place(x=350, y=180)
     
     query2.configure(text = "Query μέτρησης κατ. 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Query μέτρησης κατ. 3")
-    query3.place(x=350, y=280)
+    query3.place(x=350, y=340)
     
     query4.configure(text = "Query μέτρησης κατ. 4")
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
     
     query5.configure(text = "Query μέτρησης κατ. 5")
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
@@ -199,16 +199,16 @@ def SubstationQueries(cursor, window, query1, query2, query3, query4, query5, re
     query1.place(x=350, y=180)
     
     query2.configure(text = "Query υπάσταθμου 2")
-    query2.place(x=350, y=230)
+    query2.place(x=350, y=260)
     
     query3.configure(text = "Query υπάσταθμου 3")
-    query4.place(x=350, y=280)
+    query4.place(x=350, y=340)
     
     query4.configure(text = "Query υπάσταθμου 4")
-    query4.place(x=350, y=330)
+    query4.place(x=350, y=420)
     
     query5.configure(text = "Query υπάσταθμου 5")
-    query5.place(x=350, y=380)
+    query5.place(x=350, y=500)
     
     return
 
