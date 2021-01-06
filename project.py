@@ -156,21 +156,24 @@ def CompaniesQueries(gui):
     
     ClearGui(gui)
     
-    gui.query1.configure(text = "Query εταιρείας 1")
+    gui.query1.configure(text = "Ονόματα και Έδρες Εταιρειών ΑΠΕ ",
+    command = lambda: Etaireia1(cursor , gui.results))
     gui.query1.place(x=350, y=180)
     
-    gui.query2.configure(text = "Query εταιρείας 2")
+    gui.query2.configure(text = "Ταξινόμηση Εταιρειών με φθίνοντα Αριθμό Έργων ",
+    command=lambda: Etaireia2(cursor, gui.results))
     gui.query2.place(x=350, y=260)
     
-    gui.query3.configure(text = "Query εταιρείας 3")
+    gui.query3.configure(text = "Ταξινόμηση Εταιρειών με φθίνοντα Αριθμό Συνολικής Ισχύος σε MW ",
+    command=lambda: Etaireia3(cursor, gui.results))
     gui.query3.place(x=350, y=340)
     
-    gui.query4.configure(text = "Query εταιρείας 4")
+    gui.query4.configure(text = "Εταιρείες με τα 5 μεγαλύτερα έργα ",
+    command = lambda: Etaireia4(cursor, gui.results))
     gui.query4.place(x=350, y=420)
     
-    gui.query5.configure(text = "Query εταιρείας 5")
-    gui.query5.place(x=350, y=500)
-    
+    # gui.query5.configure(text = "Query εταιρείας 5")
+    # gui.query5.place(x=350, y=500)
     
     return
 
@@ -289,6 +292,50 @@ def TestQuery(cursor, results):
     results.configure(text = df)
     
     return
+
+
+## Queries για  πίνακα Εταιρείες
+
+def Etaireia1(cursor, results):    #Προβολή στοιχείων εταιρείας
+    query = "SELECT DISTINCT  `Όνομα Εταιρείας` , `Έδρα Εταιρείας` " \
+            "FROM `Εταιρεία` " \
+            "ORDER BY `Έδρα Εταιρείας` ,`Όνομα Εταιρείας`  ASC  "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text=df, font=("Times New Roman", 12))
+
+def Etaireia2(cursor, results):   #Ταξινόμηση εταιρειών με βάση τον αριθμό έργων
+    query = "SELECT `Όνομα Εταιρείας` ,COUNT('ID Διεσπαρμένης Παραγωγής')  as `Αριθμός Έργων` " \
+            "FROM `Εταιρεία`" \
+            "GROUP  BY `Όνομα Εταιρείας` " \
+            "ORDER BY `Αριθμός Έργων` DESC "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text=df, font=("Times New Roman", 12))
+
+def Etaireia3(cursor, results):  #Ταξινόμηση εταιρειών με βάση τα συνολικά έργα
+    query = "SELECT `Όνομα Εταιρείας`  ,SUM(`Εγκατεστημένη Ισχύς (MW)`) as `Συνολική Ισχύς Έργων`  " \
+            "FROM `Εταιρεία` JOIN `Διεσπαρμένη Παραγωγή` " \
+            "on `ID Διεσπαρμένης Παραγωγής`= `ID Μονάδας Παραγωγής`" \
+            "GROUP BY `Όνομα Εταιρείας`" \
+            "ORDER BY `Συνολική Ισχύς Έργων` DESC , `Όνομα Εταιρείας`   "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text=df, font=("Times New Roman", 12))
+
+def Etaireia4(cursor, results): #Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
+    query = "SELECT `Όνομα Εταιρείας` , `Εγκατεστημένη Ισχύς (MW)` , `Ενέργεια` " \
+            "FROM `Εταιρεία` JOIN `Διεσπαρμένη Παραγωγή` " \
+            "on `ID Διεσπαρμένης Παραγωγής`= `ID Μονάδας Παραγωγής`" \
+            "ORDER BY `Εγκατεστημένη Ισχύς (MW)` DESC , `Όνομα Εταιρείας` " \
+            "LIMIT 5  "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text=df, font=("Times New Roman", 12))
 
 
 if __name__ == '__main__':  
