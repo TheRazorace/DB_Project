@@ -4,6 +4,7 @@ import pymysql as sql
 import pymysql.cursors as cur
 import pandas as pd
 import tkinter as tk
+from tabulate import tabulate
 
 #Σύνδεση στην βάση δεδομένων
 def ConnectDatabase():
@@ -61,8 +62,9 @@ class Gui():
         self.input5 = tk.Entry(self.window, width=20)
     
     #Πεδίο προβολής απαντήσεων (στα δεξιά)
-        self.results = (tk.Label(self.window,  font=("Arial", 10)))
-        self.results.place(x=800, y=150)               
+        self.results = (tk.Label(self.window,  font=("Consolas", 10),
+                         justify=tk.LEFT, anchor='nw'))
+        self.results.place(x=750, y=150)               
     
     #Κουμπιά επιλογής κατηγορίας ερώτησης (στα αριστερά)
         self.btn1 = (tk.Button(self.window, text="Δεδομένα Διεσπαρμένης Παραγωγής", 
@@ -183,12 +185,13 @@ def AreaQueries(gui):
     
     ClearGui(gui)
     
-    gui.query1.configure(text = "Περιοχές με τα περισσότερα συμβόλαια")
+    gui.query1.configure(text = "Περιοχές με τα περισσότερα συμβόλαια",
+    command = lambda: AreaAllContracts(gui.cursor, gui.results, gui.input1.get()))
     gui.query1.place(x=350, y=180)    
-    gui.label1.configure(text="Πόλεις εμφάνισης: ")
+    gui.label1.configure(text="Πλήθος εμφάνισης: ")
     gui.label1.place(x=350, y=210)
     gui.input1.insert(10, 10)
-    gui.input1.place(x=430, y=210)
+    gui.input1.place(x=440, y=210)
     
     gui.query2.configure(text = "Query περιοχής 2")
     gui.query2.place(x=350, y=260)
@@ -251,6 +254,13 @@ def SubstationQueries(gui):
 #Καθαρισμός οθόνης
 def ClearGui(gui):
     
+    #Κρύψιμο των κουμπιών
+    gui.query1.place_forget()
+    gui.query2.place_forget()
+    gui.query3.place_forget()
+    gui.query4.place_forget()
+    gui.query5.place_forget()
+    
     #Κρύψιμο των labels από άλλα κουμπιά
     gui.label1.place_forget()
     gui.label2.place_forget()
@@ -279,17 +289,8 @@ def ClearGui(gui):
     gui.query4.configure(command = lambda: None)
     gui.query5.configure(command = lambda: None)
     
-    return
-
-
-#Όλα τα Queries από εδώ και κάτω
-def TestQuery(cursor, results):
-    
-    query = "SELECT * FROM `Διεσπαρμένη Παραγωγή`"
-    cursor.execute(query)
-    data=cursor.fetchall()
-    df = pd.DataFrame(data)
-    results.configure(text = df)
+    #Κρύψιμο αποτελεσμάτων
+    gui.results.configure(text = "")
     
     return
 
@@ -304,6 +305,8 @@ def Etaireia1(cursor, results):    #Προβολή στοιχείων εταιρ
     data = cursor.fetchall()
     df = pd.DataFrame(data)
     results.configure(text=df, font=("Times New Roman", 12))
+    
+    return
 
 def Etaireia2(cursor, results):   #Ταξινόμηση εταιρειών με βάση τον αριθμό έργων
     query = "SELECT `Όνομα Εταιρείας` ,COUNT('ID Διεσπαρμένης Παραγωγής')  as `Αριθμός Έργων` " \
@@ -314,6 +317,8 @@ def Etaireia2(cursor, results):   #Ταξινόμηση εταιρειών με 
     data = cursor.fetchall()
     df = pd.DataFrame(data)
     results.configure(text=df, font=("Times New Roman", 12))
+    
+    return
 
 def Etaireia3(cursor, results):  #Ταξινόμηση εταιρειών με βάση τα συνολικά έργα
     query = "SELECT `Όνομα Εταιρείας`  ,SUM(`Εγκατεστημένη Ισχύς (MW)`) as `Συνολική Ισχύς Έργων`  " \
@@ -325,6 +330,8 @@ def Etaireia3(cursor, results):  #Ταξινόμηση εταιρειών με �
     data = cursor.fetchall()
     df = pd.DataFrame(data)
     results.configure(text=df, font=("Times New Roman", 12))
+    
+    return
 
 def Etaireia4(cursor, results): #Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
     query = "SELECT `Όνομα Εταιρείας` , `Εγκατεστημένη Ισχύς (MW)` , `Ενέργεια` " \
@@ -336,6 +343,26 @@ def Etaireia4(cursor, results): #Ταξινόμηση ανα έργο ίσως �
     data = cursor.fetchall()
     df = pd.DataFrame(data)
     results.configure(text=df, font=("Times New Roman", 12))
+    
+    return
+
+def AreaAllContracts(cursor, results, query_input):
+    
+    query = """SELECT `Περιοχή`,`Τ.Κ.`,`Νομός`,`Διαμέρισμα`,
+            SUM(`Οικιακά Συμβόλαια`) + SUM(`Εταιρικά Συμβόλαια`) + 
+            SUM(`Βιομηχανικά Συμβόλαια`) + SUM(`Αγροτικά Συμβόλαια`) AS `Συμβόλαια`
+            FROM `Κατανάλωση Περιοχής`
+            GROUP BY `Περιοχή`
+            ORDER BY `Συμβόλαια` DESC
+            LIMIT %s """
+    
+    cursor.execute(query, int(query_input))
+    data=cursor.fetchall()
+    df = pd.DataFrame(data)
+
+    results.configure(text = tabulate(df,headers='keys',tablefmt='psql', showindex=False))
+       
+    return
 
 
 if __name__ == '__main__':  
