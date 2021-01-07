@@ -66,7 +66,14 @@ class Gui():
         self.clicked3 = tk.StringVar()
         self.clicked3.set("12:00:00")
         self.dropmn3 = tk.OptionMenu(self.window, self.clicked3, *options3)
-    
+        
+        #Εταιρείες ΑΠΕ
+
+        options4 = ["AENAOS", "ALEXAKIS Energy", "Conergy", "Copelouzos","Damco Energy","kIEFER TEK","MES ENERGY",
+                    "MP ENERGY", "ΕΛΤΕΧ ΑΝΕΜΟΣ", "ΕΝΤΕΚΑ" , "ΤΕΡΝΑ"]
+        self.clicked4 = tk.StringVar()
+        self.clicked4.set("AENAOS")
+        self.dropmn4 = tk.OptionMenu(self.window, self.clicked4, *options4)
     
     #Labels που ίσως χρειαστούν
         self.label1 = tk.Label(self.window, font=("Arial", 7))
@@ -208,8 +215,10 @@ def CompaniesQueries(gui):
     command = lambda: Etaireia4(gui))
     gui.query4.place(x=280, y=420)
     
-    # gui.query5.configure(text = "Query εταιρείας 5")
-    # gui.query5.place(x=350, y=500)
+    gui.query5.configure(text = "Όνομα Εταιρείας",
+    command=lambda: Etaireia5(gui))
+    gui.query5.place(x=280, y=500)
+    gui.dropmn4.place(x=400, y=500)
     
     return
 
@@ -342,6 +351,7 @@ def ClearGui(gui):
     gui.dropmn1.place_forget()
     gui.dropmn2.place_forget()
     gui.dropmn3.place_forget()
+    gui.dropmn4.place_forget()
     
     
     #Κρύψιμο των inputs από άλλα κουμπιά
@@ -482,6 +492,18 @@ def Etaireia4(gui): #Ταξινόμηση ανα έργο ίσως και ανα
     gui.results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
 
     return
+
+def Etaireia5(gui):  # Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
+    query = "SELECT `Όνομα Σταθμού`,`Εγκατεστημένη Ισχύς (MW)` , `Ενέργεια` , `Νομός` " \
+            "FROM `Εταιρεία` JOIN `Διεσπαρμένη Παραγωγή` " \
+            "on `ID Διεσπαρμένης Παραγωγής`= `ID Μονάδας Παραγωγής`" \
+            "WHERE `Όνομα Εταιρείας`=%s " \
+            "ORDER BY `Εγκατεστημένη Ισχύς (MW)` DESC  " \
+            "LIMIT 5  "
+    ExecuteQuery_StrInput(query, gui.clicked4.get(), gui)
+
+    return
+
 
 ## Queries για  πίνακα Μετρήσεις Παραγωγής
 
