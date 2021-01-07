@@ -135,16 +135,20 @@ def ProductionStatsQueries(gui):
     
     ClearGui(gui)
     
-    gui.query1.configure(text = "Query μέτρησης παρ. 1")
+    gui.query1.configure(text = "Παραγωγή Ανά Τέταρτο ",
+    command=lambda: Production1(cursor, gui.results))
     gui.query1.place(x=350, y=180)
     
-    gui.query2.configure(text = "Query μέτρησης παρ. 2")
+    gui.query2.configure(text = "Συνολική  παραγωγή Σταθμών ανά ώρα ",
+    command = lambda: Production2(cursor, gui.results))
     gui.query2.place(x=350, y=260)
     
-    gui.query3.configure(text = "Query μέτρησης παρ. 3")
+    gui.query3.configure(text = "Μέση  παραγωγή ανά 15 min  ανά σταθμό",
+    command=lambda: Production3(cursor, gui.results))
     gui.query3.place(x=350, y=340)
     
-    gui.query4.configure(text = "Query μέτρησης παρ. 4")
+    gui.query4.configure(text = "Ποσοστό Προέλευσης Ενέργειας ",
+    command=lambda: Production4(cursor, gui.results))
     gui.query4.place(x=350, y=420)
     
     gui.query5.configure(text = "Query μέτρησης παρ. 5")
@@ -295,6 +299,7 @@ def ClearGui(gui):
     return
 
 
+
 ## Queries για  πίνακα Εταιρείες
 
 def Etaireia1(cursor, results):    #Προβολή στοιχείων εταιρείας
@@ -304,7 +309,7 @@ def Etaireia1(cursor, results):    #Προβολή στοιχείων εταιρ
     cursor.execute(query)
     data = cursor.fetchall()
     df = pd.DataFrame(data)
-    results.configure(text=df, font=("Times New Roman", 12))
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
     
     return
 
@@ -316,7 +321,7 @@ def Etaireia2(cursor, results):   #Ταξινόμηση εταιρειών με 
     cursor.execute(query)
     data = cursor.fetchall()
     df = pd.DataFrame(data)
-    results.configure(text=df, font=("Times New Roman", 12))
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
     
     return
 
@@ -329,7 +334,7 @@ def Etaireia3(cursor, results):  #Ταξινόμηση εταιρειών με �
     cursor.execute(query)
     data = cursor.fetchall()
     df = pd.DataFrame(data)
-    results.configure(text=df, font=("Times New Roman", 12))
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
     
     return
 
@@ -342,8 +347,67 @@ def Etaireia4(cursor, results): #Ταξινόμηση ανα έργο ίσως �
     cursor.execute(query)
     data = cursor.fetchall()
     df = pd.DataFrame(data)
-    results.configure(text=df, font=("Times New Roman", 12))
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+## Queries για  πίνακα Μετρήσεις Παραγωγής
+
+def Production1(cursor, results): #Μέγιστη παραγωγή ανά 15 min
+    query = "SELECT `Συνολική Μέτρηση (KWh)` , `Όνομα Σταθμού` " \
+            "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή` " \
+            "on `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`= `Διεσπαρμένη Παραγωγή`.`ID Μονάδας Παραγωγής`" \
+            "WHERE `Ώρα` = '2021-01-15 12:00:00' " \
+            "GROUP BY `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`" \
+            "ORDER BY `Συνολική Μέτρηση (KWh)` DESC "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
     
+    return
+
+
+def Production2(cursor, results): #Συνολική  παραγωγή ανά 1 hour  ανά σταθμό
+    query = "SELECT SUM(`Συνολική Μέτρηση (KWh)`) as  `Συνολική Παραγωγή / h`,`Διεσπαρμένη Παραγωγή`.`Όνομα Σταθμού`  " \
+            "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή`" \
+            "on `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`= `Διεσπαρμένη Παραγωγή`.`ID Μονάδας Παραγωγής`" \
+            "GROUP BY `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`" \
+            "ORDER BY `Συνολική Παραγωγή / h` DESC "
+
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+def Production3(cursor, results): #Μέση  παραγωγή ανά 15 min  ανά σταθμό
+    query = "SELECT AVG(`Συνολική Μέτρηση (KWh)`) as  `Συνολική Παραγωγή / 15 min`,`Διεσπαρμένη Παραγωγή`.`Όνομα Σταθμού`  " \
+            "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή`" \
+            "on `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`= `Διεσπαρμένη Παραγωγή`.`ID Μονάδας Παραγωγής`" \
+            "GROUP BY `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`" \
+            "ORDER BY `Συνολική Παραγωγή / 15 min` DESC "
+
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+def Production4(cursor, results): #Ποσοστό Προέλευσης Ενέργειας
+    query = "SELECT SUM(`Συνολική Μέτρηση (KWh)`)/(SELECT SUM(`Μέτρηση Παραγωγής`.`Συνολική Μέτρηση (KWh)`) FROM `Μέτρηση Παραγωγής` ) as `Ποσοστό Συνολικής Παραγωγής`" \
+            ",`Διεσπαρμένη Παραγωγή`.`Ενέργεια`  as `Είδος Ενέργειας ` " \
+            "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή`" \
+            "on `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`= `Διεσπαρμένη Παραγωγή`.`ID Μονάδας Παραγωγής`" \
+            "GROUP BY `Διεσπαρμένη Παραγωγή`.`Ενέργεια`" \
+            "ORDER BY `Διεσπαρμένη Παραγωγή`.`Ενέργεια` ASC "
+    cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
     return
 
 def AreaAllContracts(cursor, results, query_input):
