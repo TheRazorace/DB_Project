@@ -46,7 +46,28 @@ class Gui():
         self.query3 = tk.Button(self.window)   
         self.query4 = tk.Button(self.window)   
         self.query5 = tk.Button(self.window) 
-        
+     
+    #DropDown menus
+        #Dates
+        options1 = ["2015", "2016", "2017", "2018", "2019", "2020"]
+        self.clicked = tk.StringVar()
+        self.clicked.set("2015")
+        self.dropmn1 = tk.OptionMenu(self.window, self.clicked, *options1)
+
+        # Stations
+        options2 = ["Αιολικός Σταθμός Ροδίνης", "Αιολικός Πάρκο Παναχαικού","Αιολικό Πάρκο Ναυπάκτου"]
+        self.clicked2 = tk.StringVar()
+        self.clicked2.set("Αιολικός Σταθμός Ροδίνης")
+        self.dropmn2 = tk.OptionMenu(self.window, self.clicked2, *options2)
+
+        #Time
+
+        options3 = ["12:00:00", "12:15:00", "12:30:00", "12:45:00"]
+        self.clicked3 = tk.StringVar()
+        self.clicked3.set("12:00:00")
+        self.dropmn3 = tk.OptionMenu(self.window, self.clicked3, *options3)
+    
+    
     #Labels που ίσως χρειαστούν
         self.label1 = tk.Label(self.window, font=("Arial", 7))
         self.label2 = tk.Label(self.window, font=("Arial", 7))
@@ -69,27 +90,27 @@ class Gui():
         self.results_title.place(x=610, y=120)           
     
     #Κουμπιά επιλογής κατηγορίας ερώτησης (στα αριστερά)
-        self.btn1 = (tk.Button(self.window, text="Δεδομένα Διεσπαρμένης Παραγωγής", 
+        self.btn1 = (tk.Button(self.window, text="Διεσπαρμένη Παραγωγή",
         command = lambda: ProductionQueries(self)))
         self.btn1.place(x=25, y=180)
     
-        self.btn2 = (tk.Button(self.window, text="Δεδομένα Μέτρησης Παραγωγής", 
+        self.btn2 = (tk.Button(self.window, text="Μετρήσεις Παραγωγής",
         command = lambda: ProductionStatsQueries(self)))
         self.btn2.place(x=25, y=260)
     
-        self.btn3 = (tk.Button(self.window, text="Δεδομένα Εταιρειών Παραγωγής", 
+        self.btn3 = (tk.Button(self.window, text="Εταιρείες Παραγωγής",
         command = lambda: CompaniesQueries(self)))
         self.btn3.place(x=25, y=340)
     
-        self.btn4 = (tk.Button(self.window, text="Δεδομένα Κατανάλωσης Περιοχών", 
+        self.btn4 = (tk.Button(self.window, text="Κατανάλωση Περιοχών",
         command = lambda: AreaQueries(self)))
         self.btn4.place(x=25, y=420)
     
-        self.btn5 = (tk.Button(self.window, text="Δεδομένα Μέτρησης Κατανάλωσης", 
+        self.btn5 = (tk.Button(self.window, text="Μέτρηση Κατανάλωσης",
         command = lambda: ConsumptionStatsQueries(self)))
         self.btn5.place(x=25, y=500)
     
-        self.btn6 = (tk.Button(self.window, text="Δεδομένα Τοπικών Υποσταθμών", 
+        self.btn6 = (tk.Button(self.window, text="Τοπικοί Υποσταθμοί",
         command = lambda: SubstationQueries(self)))
         self.btn6.place(x=25, y=580)
     
@@ -117,20 +138,24 @@ def ProductionQueries(gui):
     command=lambda: Diesp1(gui))
     gui.query1.place(x=280, y=180)
 
-    gui.query2.configure(text="Αρ. Σταθμών Διεσπαρμένης Ενέργειας ανά Νομό",
+    gui.query2.configure(text="Αρ. Σταθμών ΑΠΕ ανά Νομό",
     command=lambda: Diesp2(gui))
     gui.query2.place(x=280, y=260)
 
-    gui.query3.configure(text="Αριθμός Σταθμών ΑΠΕ ανά Νομό 3",
+    gui.query3.configure(text="Είδη Ανανεώσιμης Ενέργειας ανά Νομό",
     command=lambda: Diesp3(gui))
     gui.query3.place(x=280, y=340)
 
-    gui.query4.configure(text="Έργα τα τελευταία 3 χρόνια",
+    gui.query4.configure(text="Ενεργοί Σταθμοί έως:",
     command=lambda: Diesp4(gui))
     gui.query4.place(x=280, y=420)
+    gui.dropmn1.place(x=420, y=420)
 
-    gui.query5.configure(text="Διεσπαρμένο query 5")
+    gui.query5.configure(text="Επιλογή Σταθμού",
+    command=lambda: Diesp5(gui))
     gui.query5.place(x=280, y=500)
+    gui.dropmn2.place(x=405, y=500)
+
 
     return
 
@@ -142,6 +167,7 @@ def ProductionStatsQueries(gui):
     gui.query1.configure(text = "Παραγωγή Ανά Τέταρτο ",
     command=lambda: Production1(gui))
     gui.query1.place(x=280, y=180)
+    gui.dropmn3.place(x=450, y=180)
     
     gui.query2.configure(text = "Συνολική  παραγωγή Σταθμών ανά ώρα ",
     command = lambda: Production2(gui))
@@ -312,6 +338,12 @@ def ClearGui(gui):
     gui.label4.place_forget()
     gui.label5.place_forget()
     
+    #Κρύψιμο των Drop Menus
+    gui.dropmn1.place_forget()
+    gui.dropmn2.place_forget()
+    gui.dropmn3.place_forget()
+    
+    
     #Κρύψιμο των inputs από άλλα κουμπιά
     gui.input1.place_forget()
     gui.input2.place_forget()
@@ -345,7 +377,7 @@ def ClearGui(gui):
 ## Queries για  πίνακα Διεσπαρμένη Ενέργεια
 
 def Diesp1(gui):  # Προβολή Σταθμών ανά Νομό με φθίνοντα αριθμό Ισχύος
-    query = "SELECT `Νομός`, `Όνομα Σταθμού` ,`Περιοχές Εξυπηρέτησης` " \
+    query = "SELECT `Νομός`, `Όνομα Σταθμού`  , `Εγκατεστημένη Ισχύς (MW)` " \
             "FROM `Διεσπαρμένη Παραγωγή` " \
             "ORDER BY `Νομός` ASC ,`Όνομα Σταθμού`  ASC  "
     gui.cursor.execute(query)
@@ -382,20 +414,19 @@ def Diesp3(gui):  # Αριθμός Σταθμών ΑΠΕ ανά Νομό
 
     return
 
-def Diesp4(gui):  # Έργα που έγιναν τα τελευταία Ν(3) χρόνια
-    query = "SELECT  COUNT(`Ενέργεια`) as `Αριθμός Μονάδων` ,`Ενέργεια` ,`Νομός`  " \
+def Diesp4(gui):
+    query = "SELECT   `Όνομα Σταθμού` ,`Ενέργεια` ,`Νομός` ,`Εγκατεστημένη Ισχύς (MW)` " \
             "FROM `Διεσπαρμένη Παραγωγή` " \
-            "WHERE YEAR(current_date) - YEAR(`Ενεργός Από:`) <3  " \
-            "GROUP BY `Ενέργεια` , `Νομός` " \
+            "WHERE   YEAR(`Ενεργός Από:`) <= %s  " \
             "ORDER BY `Νομός` ASC  "
-    gui.cursor.execute(query)
-    data = cursor.fetchall()
-    df = pd.DataFrame(data)
-    gui.results_title.configure(text="Αποτελέσματα")
-    gui.results.configure(text=tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+    ExecuteQuery_IntInput(query, gui.clicked.get(), gui)
 
+def Diesp5(gui):  # Πληροφορίες Σταθμού
+    query = "SELECT  `Νομός`, `Όνομα Σταθμού`  , `Εγκατεστημένη Ισχύς (MW)`  " \
+            "FROM `Διεσπαρμένη Παραγωγή` " \
+            "WHERE `Όνομα Σταθμού` = %s  "
+    ExecuteQuery_StrInput(query, gui.clicked2.get(), gui)
     return
-
 
 ## Queries για  πίνακα Εταιρείες
 
@@ -458,14 +489,9 @@ def Production1(gui): #Μέγιστη παραγωγή ανά 15 min
     query = "SELECT `Συνολική Μέτρηση (KWh)` , `Όνομα Σταθμού` " \
             "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή` " \
             "on `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`= `Διεσπαρμένη Παραγωγή`.`ID Μονάδας Παραγωγής`" \
-            "WHERE `Ώρα` = '2021-01-15 12:00:00' " \
-            "GROUP BY `Μέτρηση Παραγωγής`.`ID Μονάδας Παραγωγής`" \
+            "WHERE TIME(`Ώρα`) = %s " \
             "ORDER BY `Συνολική Μέτρηση (KWh)` DESC "
-    gui.cursor.execute(query)
-    data = cursor.fetchall()
-    df = pd.DataFrame(data)
-    gui.results_title.configure(text ="Αποτελέσματα")
-    gui.results.configure(text = tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+    ExecuteQuery_StrInput(query, gui.clicked3.get(), gui)
     
     return
 
@@ -649,6 +675,15 @@ def ExecuteQuery_IntInput(query, query_input, gui):
     
         PrintResults(gui, df)
     
+    return
+
+
+def ExecuteQuery_StrInput(query, query_input, gui):
+    entry = query_input
+    gui.cursor.execute(query, str(entry))
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    PrintResults(gui, df)
     return
 
 
