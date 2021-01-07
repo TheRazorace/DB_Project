@@ -109,27 +109,29 @@ def StartMenu(cursor):
 #Σε κάθε query κουμπί ρυθμίζεις τι θες να έχουν μέσα τα labels και τα inputs
 #με την εντολή configure. Αλλιώς τα κάνεις place_forget() για να μην φαίνονται
 
-#Queries Διεσπαρμένης Παραγωγής
+# Queries Διεσπαρμένης Παραγωγής
 def ProductionQueries(gui):
-    
     ClearGui(gui)
-    
-    gui.query1.configure(text = "Αναζήτηση όλων των σταθμών παραγωγής", 
-    command = lambda: TestQuery(cursor, gui.results))
+
+    gui.query1.configure(text="Σταθμοί παραγωγής Διεσπαρμένης Ενέργειας",
+    command=lambda: Diesp1(gui))
     gui.query1.place(x=280, y=180)
-    
-    gui.query2.configure(text = "Διεσπαρμένο query 2")
+
+    gui.query2.configure(text="Αρ. Σταθμών Διεσπαρμένης Ενέργειας ανά Νομό",
+    command=lambda: Diesp2(gui))
     gui.query2.place(x=280, y=260)
-    
-    gui.query3.configure(text = "Διεσπαρμένο query 3")
+
+    gui.query3.configure(text="Αριθμός Σταθμών ΑΠΕ ανά Νομό 3",
+    command=lambda: Diesp3(gui))
     gui.query3.place(x=280, y=340)
-    
-    gui.query4.configure(text = "Διεσπαρμένο query 4")
+
+    gui.query4.configure(text="Έργα τα τελευταία 3 χρόνια",
+    command=lambda: Diesp4(gui))
     gui.query4.place(x=280, y=420)
 
-    gui.query5.configure(text = "Διεσπαρμένο query 5")
+    gui.query5.configure(text="Διεσπαρμένο query 5")
     gui.query5.place(x=280, y=500)
-    
+
     return
 
 #Queries Μέτρησης Παραγωγής
@@ -338,6 +340,61 @@ def ClearGui(gui):
     
     return
 
+
+
+## Queries για  πίνακα Διεσπαρμένη Ενέργεια
+
+def Diesp1(gui):  # Προβολή Σταθμών ανά Νομό με φθίνοντα αριθμό Ισχύος
+    query = "SELECT `Νομός`, `Όνομα Σταθμού` ,`Περιοχές Εξυπηρέτησης` " \
+            "FROM `Διεσπαρμένη Παραγωγή` " \
+            "ORDER BY `Νομός` ASC ,`Όνομα Σταθμού`  ASC  "
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    gui.results_title.configure(text="Αποτελέσματα")
+    gui.results.configure(text=tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+def Diesp2(gui):  # Αριθμός Σταθμών ΑΠΕ ανά Νομό
+    query = "SELECT `Νομός`, COUNT(`ID Μονάδας Παραγωγής`) as `Αρ. Μονάδσων Διεσπαρμένης Παραγωγής` " \
+            "FROM `Διεσπαρμένη Παραγωγή` " \
+            "GROUP BY `Νομός` " \
+            "ORDER BY `Αρ. Μονάδσων Διεσπαρμένης Παραγωγής` DESC "
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    gui.results_title.configure(text="Αποτελέσματα")
+    gui.results.configure(text=tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+def Diesp3(gui):  # Αριθμός Σταθμών ΑΠΕ ανά Νομό
+    query = "SELECT  COUNT(`Ενέργεια`) as `Αριθμός Μονάδων` ,`Ενέργεια` ,`Νομός`  " \
+            "FROM `Διεσπαρμένη Παραγωγή` " \
+            "GROUP BY `Ενέργεια` , `Νομός` " \
+            "ORDER BY `Νομός` ASC  "
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    gui.results_title.configure(text="Αποτελέσματα")
+    gui.results.configure(text=tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
+
+def Diesp4(gui):  # Έργα που έγιναν τα τελευταία Ν(3) χρόνια
+    query = "SELECT  COUNT(`Ενέργεια`) as `Αριθμός Μονάδων` ,`Ενέργεια` ,`Νομός`  " \
+            "FROM `Διεσπαρμένη Παραγωγή` " \
+            "WHERE YEAR(current_date) - YEAR(`Ενεργός Από:`) <3  " \
+            "GROUP BY `Ενέργεια` , `Νομός` " \
+            "ORDER BY `Νομός` ASC  "
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    df = pd.DataFrame(data)
+    gui.results_title.configure(text="Αποτελέσματα")
+    gui.results.configure(text=tabulate(df, headers='keys', tablefmt='psql', showindex=False))
+
+    return
 
 
 ## Queries για  πίνακα Εταιρείες
