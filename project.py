@@ -459,26 +459,20 @@ def DeleteQuery(gui):
 
     gui.query2.configure(text="Διαγραφή Τοπικού Υποσταθμού",
                          command=lambda: delete_ypo(gui))
-    gui.query2.place(x=280, y=180)
-    gui.dropmn5.place(x=280, y=210)
+    gui.query2.place(x=280, y=190)
+    gui.dropmn5.place(x=280, y=220)
 
     gui.query3.configure(text="Διαγραφή Περιοχής",
                          command=lambda: delete_area(gui))
-    gui.query3.place(x=280, y=260)
-    gui.dropmn6.place(x=280, y=300)
-
-    ##    gui.labelDelete.configure(text="T.K.: ")
-    ##    gui.labelDelete.place(x=400, y=305)
-    ##    gui.inputDelete.insert(10, 10)
-    ##   gui.inputDelete.place(x=430, y=305)
+    gui.query3.place(x=280, y=280)
+    gui.dropmn6.place(x=280, y=310)
 
     gui.query4.configure(text="Διαγραφή Εταιρείας",
                          command=lambda: delete_etairia(gui))
-    gui.query4.place(x=280, y=340)
-    gui.dropmn4.place(x=280, y=370)
+    gui.query4.place(x=280, y=370)
+    gui.dropmn4.place(x=280, y=400)
 
     return
-
 
 # Καθαρισμός οθόνης
 def ClearCentralGui(gui):
