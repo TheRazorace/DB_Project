@@ -321,10 +321,13 @@ def AreaQueries(gui):
     gui.query4.configure(text="Τοπικός υποσταθμός περιοχής",
                          command=lambda: AreaStation(gui))
     gui.query4.place(x=280, y=340)
-    gui.label4.configure(text="Περιοχή αναζήτησης: ")
-    gui.label4.place(x=280, y=370)
-    gui.input4.insert(10, 'Πάτρα - Κέντρο')
-    gui.input4.place(x=375, y=370)
+    gui.dropmn6.place(x=280, y=370)
+    
+    
+    # gui.label4.configure(text="Περιοχή αναζήτησης: ")
+    # gui.label4.place(x=280, y=370)
+    # gui.input4.insert(10, 'Πάτρα - Κέντρο')
+    # gui.input4.place(x=375, y=370)
 
     # gui.query5.configure(text = "Query περιοχής 5")
     # gui.query5.place(x=350, y=500)
@@ -385,10 +388,11 @@ def SubstationQueries(gui):
     gui.query4.configure(text="Στοιχεία σύνδεσης σταθμών",
                          command=lambda: NetworkConnections(gui))
     gui.query4.place(x=280, y=340)
-    gui.label4.configure(text="Πλήθος εμφάνισης: ")
+    gui.label4.configure(text="Επιλογή Σταθμού: ")
     gui.label4.place(x=280, y=370)
-    gui.input4.insert(10, 10)
-    gui.input4.place(x=370, y=370)
+    gui.dropmn5.place(x=370, y=370)
+    # gui.input4.insert(10, 10)
+    # gui.input4.place(x=370, y=370)
 
     # gui.query5.configure(text = "Query υπάσταθμου 5")
     # gui.query5.place(x=350, y=500)
@@ -857,9 +861,9 @@ def AreaStation(gui):
             FROM `Κατανάλωση Περιοχής` kp 
             JOIN `Τοπικός Υποσταθμός` ty ON kp.`ID Βασικού Υποσταθμού` = ty.`ID Υποσταθμού`
             WHERE `Περιοχή` = %s"""
+            
 
-    entry = gui.input4.get()
-    gui.cursor.execute(query, entry)
+    gui.cursor.execute(query, gui.clicked6.get())
     data = cursor.fetchall()
     df = pd.DataFrame(data)
     PlaceFileButtons(gui)
@@ -932,14 +936,13 @@ def NetworkConnections(gui):
                FROM `Συνδέεται` s
                JOIN `Τοπικός Υποσταθμός` ty ON ty.`ID Υποσταθμού` = s.`ID Τοπικού Υποσταθμού`
                JOIN `Διεσπαρμένη Παραγωγή` dp ON dp.`ID Μονάδας Παραγωγής` = s.`ID Μονάδας Παραγωγής`
-               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού`,
-               `Σταθμός Παραγωγής`
-               LIMIT %s"""
+              WHERE ty.`Όνομα Σταθμού`= %s
+               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού` """
 
     gui.results.place(x=575, y=250)
     gui.results.configure(font=("Consolas", 8))
     PlaceFileButtons(gui)
-    ExecuteQuery_IntInput(query, gui.input4.get(), gui)
+    ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
 
     return
 
@@ -978,13 +981,6 @@ def ExecuteQuery_StrInput(query, query_input, gui):
     PrintResults(gui, gui.df)
     return
 
-def ExecuteQuery_StrInput_2(query, query_input, gui):
-    entry = query_input
-    gui.cursor.execute(query, (str(entry), str(entry)))
-    data = cursor.fetchall()
-    gui.df = pd.DataFrame(data)
-    PrintResults(gui, gui.df)
-    return
 
 
 
