@@ -152,8 +152,8 @@ class Gui():
                                command=lambda: SubstationQueries(self)))
         self.btn6.place(x=25, y=500)
 
-        self.btn7 = (tk.Button(self.window, text="Εισαγωγή/Ενημέρωση Δεδομένων",
-                               command=lambda: InsertSetQuery(self)))
+        self.btn7 = (tk.Button(self.window, text="Εισαγωγή Δεδομένων",
+                               command=lambda: InsertQuery(self)))
         self.btn7.place(x=25, y=580)
 
         self.btn8 = (tk.Button(self.window, text="Διαγραφή Δεδομένων",
@@ -169,6 +169,10 @@ class Gui():
         self.isd_lbl6 = tk.Label(self.window)
         self.isd_lbl7 = tk.Label(self.window)
         self.isd_lbl8 = tk.Label(self.window)
+        self.isd_lbl9 = tk.Label(self.window)
+        self.isd_lbl10 = tk.Label(self.window)
+        self.isd_lbl11 = tk.Label(self.window)
+        self.isd_lbl12 = tk.Label(self.window)
 
         self.isd_input1 = tk.Entry(self.window)
         self.isd_input2 = tk.Entry(self.window)
@@ -178,9 +182,14 @@ class Gui():
         self.isd_input6 = tk.Entry(self.window)
         self.isd_input7 = tk.Entry(self.window)
         self.isd_input8 = tk.Entry(self.window)
+        self.isd_input9 = tk.Entry(self.window)
+        self.isd_input10 = tk.Entry(self.window)
+        self.isd_input11 = tk.Entry(self.window)
+        self.isd_input12 = tk.Entry(self.window)
 
         self.exe_btn = tk.Button(self.window, text="Εκτέλεση",
                                  command=lambda: ExecuteIsd(gui))
+        self.isd_status = tk.Label(self.window)
 
         # Dataframe δεδομένων
         self.df = pd.DataFrame(None)
@@ -335,25 +344,39 @@ def AreaQueries(gui):
     return
 
 
-# Queries Μέτρησης Παραγωγής
+#Queries Μέτρησης Κατανάλωσης
 def ConsumptionStatsQueries(gui):
+    
     ClearCentralGui(gui)
-
-    gui.query1.configure(text="Query μέτρησης κατ. 1")
-    gui.query1.place(x=280, y=100)
-
-    gui.query2.configure(text="Query μέτρησης κατ. 2")
+    
+    gui.query1.configure(text = "Κατανάλωση ανά 15 λεπτά",
+    command = lambda: Consumption15min(gui))
+    gui.query1.place(x=280, y=100)    
+    gui.label1.configure(text="Πλήθος εμφάνισης: ")
+    gui.label1.place(x=280, y=130)
+    gui.input1.insert(10, 10)
+    gui.input1.place(x=370, y=130)
+    
+    gui.query2.configure(text = "Κατανάλωση σε 1 ώρα",
+    command = lambda: Consumption1Hr(gui))
+    gui.query2.place(x=280, y=180)   
+    gui.label2.configure(text="Πλήθος εμφάνισης: ")
+    gui.label2.place(x=280, y=210)
+    gui.input2.insert(10, 10)
+    gui.input2.place(x=370, y=210)
     gui.query2.place(x=280, y=180)
-
-    gui.query3.configure(text="Query μέτρησης κατ. 3")
+    
+    gui.query3.configure(text = "Κατανάλωση σε 1 ώρα ανά νομό",
+    command = lambda: CountyConsumption1Hr(gui))
     gui.query3.place(x=280, y=260)
-
-    gui.query4.configure(text="Query μέτρησης κατ. 4")
+    
+    gui.query4.configure(text = "Ποσοστό 'πράσινης' κατνάλωσης",
+    command=lambda: GreenConsumption(gui))
     gui.query4.place(x=280, y=340)
-
-    gui.query5.configure(text="Query μέτρησης κατ. 5")
-    gui.query5.place(x=280, y=420)
-
+    
+    #gui.query5.configure(text = "Query μέτρησης κατ. 5")
+    #gui.query5.place(x=280, y=420)
+    
     return
 
 
@@ -400,26 +423,28 @@ def SubstationQueries(gui):
     return
 
 
-# Insert/Set Queries
-def InsertSetQuery(gui):
+#Insert Queries
+def InsertQuery(gui):
+    
     ClearCentralGui(gui)
-
-    gui.query1.configure(text="Προσθήκη Σταθμού Παραγωγής",
-                         command=lambda: InsertTest(gui))
+    
+    gui.query1.configure(text = "Προσθήκη Σταθμού Παραγωγής",
+    command = lambda: InsertDiesp(gui))
     gui.query1.place(x=280, y=100)
-
-    gui.query2.configure(text="Προσθήκη Τοπικού Υποσταθμού")
+    
+    gui.query2.configure(text = "Προσθήκη Τοπικού Υποσταθμού",
+    command = lambda: InsertSubstation(gui))
     gui.query2.place(x=280, y=180)
-
-    gui.query3.configure(text="Προσθήκη Περιοχής")
+    
+    gui.query3.configure(text = "Προσθήκη Περιοχής",
+    command = lambda: InsertArea(gui))
     gui.query3.place(x=280, y=260)
-
-    gui.query4.configure(text="Προσθήκη Εταιρείας")
+    
+    gui.query4.configure(text = "Προσθήκη Εταιρείας",
+    command = lambda: InsertCompany(gui))
     gui.query4.place(x=280, y=340)
 
-    gui.query5.configure(text="Ενημέρωση Περιοχής")
-    gui.query5.place(x=280, y=420)
-
+    
     return
 
 
@@ -530,6 +555,7 @@ def ClearCentralGui(gui):
 
 
 def ClearRightGui(gui):
+    
     gui.isd_lbl1.place_forget()
     gui.isd_lbl2.place_forget()
     gui.isd_lbl3.place_forget()
@@ -538,7 +564,11 @@ def ClearRightGui(gui):
     gui.isd_lbl6.place_forget()
     gui.isd_lbl7.place_forget()
     gui.isd_lbl8.place_forget()
-
+    gui.isd_lbl9.place_forget()
+    gui.isd_lbl10.place_forget()
+    gui.isd_lbl11.place_forget()
+    gui.isd_lbl12.place_forget()
+    
     gui.isd_input1.place_forget()
     gui.isd_input2.place_forget()
     gui.isd_input3.place_forget()
@@ -547,9 +577,27 @@ def ClearRightGui(gui):
     gui.isd_input6.place_forget()
     gui.isd_input7.place_forget()
     gui.isd_input8.place_forget()
-
+    gui.isd_input9.place_forget()
+    gui.isd_input10.place_forget()
+    gui.isd_input11.place_forget()
+    gui.isd_input12.place_forget()
+    
+    gui.isd_input1.delete(0,tk.END)
+    gui.isd_input2.delete(0,tk.END)
+    gui.isd_input3.delete(0,tk.END)
+    gui.isd_input4.delete(0,tk.END)
+    gui.isd_input5.delete(0,tk.END)
+    gui.isd_input6.delete(0,tk.END)
+    gui.isd_input7.delete(0,tk.END)
+    gui.isd_input8.delete(0,tk.END)
+    gui.isd_input9.delete(0,tk.END)
+    gui.isd_input10.delete(0,tk.END)
+    gui.isd_input11.delete(0,tk.END)
+    gui.isd_input12.delete(0,tk.END)
+    
     gui.exe_btn.place_forget()
-
+    gui.isd_status.place_forget()
+    
     return
 
 
@@ -936,13 +984,14 @@ def NetworkConnections(gui):
                FROM `Συνδέεται` s
                JOIN `Τοπικός Υποσταθμός` ty ON ty.`ID Υποσταθμού` = s.`ID Τοπικού Υποσταθμού`
                JOIN `Διεσπαρμένη Παραγωγή` dp ON dp.`ID Μονάδας Παραγωγής` = s.`ID Μονάδας Παραγωγής`
-              WHERE ty.`Όνομα Σταθμού`= %s
-               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού` """
+               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού`,
+               `Σταθμός Παραγωγής`
+               LIMIT %s"""
 
     gui.results.place(x=575, y=250)
     gui.results.configure(font=("Consolas", 8))
     PlaceFileButtons(gui)
-    ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
+    ExecuteQuery_IntInput(query, gui.input4.get(), gui)
 
     return
 
@@ -954,6 +1003,92 @@ def delete_ypo(gui):
     ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
     get_companies_names()
 
+   return
+
+#Queries Μέτρησης Κατανάλωσης
+def Consumption1Hr(gui):
+    
+    query = """SELECT `Περιοχή`, 
+               SUM(`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα'
+               FROM `Μέτρηση Κατανάλωσης` 
+               GROUP BY `Περιοχή`
+               ORDER BY `Κατανάλωση σε 1 ώρα` DESC
+               LIMIT %s"""
+               
+    PlaceFileButtons(gui)
+    ExecuteQuery_IntInput(query, gui.input2.get(), gui)
+    gui.plot_btn.place(x=1010, y=150)
+    gui.axis_y = 'Κατανάλωση σε 1 ώρα'
+    gui.axis_x = 'Περιοχή'
+      
+    return
+
+def Consumption15min(gui):
+    
+    query = """SELECT `Περιοχή`, 
+               AVG(`Συνολική Κατανάλωση (KWh)`) AS 'Μέση Κατανάλωση ανά 15 λεπτά'
+               FROM `Μέτρηση Κατανάλωσης` 
+               GROUP BY `Περιοχή`
+               ORDER BY `Μέση Κατανάλωση ανά 15 λεπτά`
+               LIMIT %s"""
+    
+    PlaceFileButtons(gui)
+    ExecuteQuery_IntInput(query, gui.input1.get(), gui)
+    gui.plot_btn.place(x=1010, y=150)
+    gui.axis_y = 'Μέση Κατανάλωση ανά 15 λεπτά'
+    gui.axis_x = 'Περιοχή'
+    
+    return
+
+
+def CountyConsumption1Hr(gui):
+    
+    query = """SELECT kp.`Νομός`, 
+            SUM(mk.`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα'
+            FROM `Μέτρηση Κατανάλωσης` mk
+            NATURAL JOIN `Κατανάλωση Περιοχής` kp
+            GROUP BY kp.`Νομός`
+            ORDER BY kp.`Νομός`"""
+    
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    gui.df = pd.DataFrame(data)   
+    gui.results_title.configure(text ="Αποτελέσματα Αναζήτησης:")
+    PlaceFileButtons(gui)
+    gui.results.configure(text = tabulate(gui.df, headers='keys', tablefmt='psql', showindex=False))
+    gui.plot_btn.place(x=1010, y=150)
+    gui.axis_y = 'Κατανάλωση σε 1 ώρα'
+    gui.axis_x = 'Νομός'
+    
+    return
+
+
+def GreenConsumption(gui):
+    
+    query = """SELECT kp.`Νομός` AS 'Νομός', 
+            SUM(mk.`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα',
+            SUM(mp.`Συνολική Μέτρηση (KWh)`) AS 'Παραγωγή σε 1 ώρα',
+            (SUM(mp.`Συνολική Μέτρηση (KWh)`)/SUM(mk.`Συνολική Κατανάλωση (KWh)`))*100
+            AS 'Ποσοστό Πράσινης Κατανάλωσης'
+            FROM `Μέτρηση Κατανάλωσης` mk
+            NATURAL JOIN `Κατανάλωση Περιοχής` kp
+            NATURAL JOIN `Διεσπαρμένη Παραγωγή` dp
+            NATURAL JOIN `Μέτρηση Παραγωγής` mp
+            GROUP BY `Νομός`
+            ORDER BY `Νομός`"""
+            
+    gui.cursor.execute(query)
+    data = cursor.fetchall()
+    gui.df = pd.DataFrame(data)   
+    gui.results_title.configure(text ="Αποτελέσματα Αναζήτησης:")
+    PlaceFileButtons(gui)
+    gui.results.configure(text = tabulate(gui.df, headers='keys', tablefmt='psql', showindex=False))
+    gui.plot_btn.place(x=1010, y=150)
+    gui.axis_y = 'Ποσοστό Πράσινης Κατανάλωσης'
+    gui.axis_x = 'Νομός'
+    
+    
+    return
 
 def ExecuteQuery_IntInput(query, query_input, gui):
     entry = query_input
@@ -1033,46 +1168,295 @@ def PlaceFileButtons(gui):
     return
 
 
-def InsertTest(gui):
+def InsertDiesp(gui):
+    
     ClearRightGui(gui)
-
-    gui.results_title.configure(text="Δεδομένα εισαγωγής:")
-
-    gui.isd_lbl1.configure(text="Πεδίο: ")
-    gui.isd_lbl1.place(x=640, y=240)
-    gui.isd_input1.place(x=700, y=240)
-
-    gui.isd_lbl2.configure(text="Πεδίο: ")
-    gui.isd_lbl2.place(x=940, y=240)
-    gui.isd_input2.place(x=1000, y=240)
-
-    gui.isd_lbl3.configure(text="Πεδίο: ")
-    gui.isd_lbl3.place(x=640, y=320)
-    gui.isd_input3.place(x=700, y=320)
-
-    gui.isd_lbl4.configure(text="Πεδίο: ")
-    gui.isd_lbl4.place(x=940, y=320)
-    gui.isd_input4.place(x=1000, y=320)
-
-    gui.isd_lbl5.configure(text="Πεδίο: ")
-    gui.isd_lbl5.place(x=640, y=400)
-    gui.isd_input5.place(x=700, y=400)
-
-    gui.isd_lbl6.configure(text="Πεδίο: ")
-    gui.isd_lbl6.place(x=940, y=400)
-    gui.isd_input6.place(x=1000, y=400)
-
-    gui.isd_lbl7.configure(text="Πεδίο: ")
-    gui.isd_lbl7.place(x=640, y=480)
-    gui.isd_input7.place(x=700, y=480)
-
-    gui.isd_lbl8.configure(text="Πεδίο: ")
-    gui.isd_lbl8.place(x=940, y=480)
-    gui.isd_input8.place(x=1000, y=480)
-
-    gui.exe_btn.place(x=640, y=560)
-
+    
+    gui.results_title.configure(text = "Δεδομένα εισαγωγής:")
+    
+    gui.isd_lbl1.configure(text = "ID: ")
+    gui.isd_lbl1.place(x=640, y=160)
+    gui.isd_input1.place(x=700, y=160)
+    
+    gui.isd_lbl2.configure(text = "Όνομα: ")
+    gui.isd_lbl2.place(x=940, y=160)
+    gui.isd_input2.place(x=1000, y=160)
+    
+    gui.isd_lbl3.configure(text = "Ισχύς (MW): ")
+    gui.isd_lbl3.place(x=640, y=220)
+    gui.isd_input3.place(x=720, y=220)
+    
+    gui.isd_lbl4.configure(text = "Μορφή Ενέργειας: ")
+    gui.isd_lbl4.place(x=940, y=220)
+    gui.isd_input4.place(x=1050, y=220)
+    
+    gui.isd_lbl5.configure(text = "Ενέργεια: ")
+    gui.isd_lbl5.place(x=640, y=280)
+    gui.isd_input5.place(x=700, y=280)
+    
+    gui.isd_lbl6.configure(text = "Τεχνολογία: ")
+    gui.isd_lbl6.place(x=940, y=280)
+    gui.isd_input6.place(x=1040, y=280)
+    
+    gui.isd_lbl7.configure(text = "Γεωγρ. Μήκος: ")
+    gui.isd_lbl7.place(x=640, y=340)
+    gui.isd_input7.place(x=740, y=340)
+    
+    gui.isd_lbl8.configure(text = "Γεωγρ. Πλάτος: ")
+    gui.isd_lbl8.place(x=940, y=340)
+    gui.isd_input8.place(x=1040, y=340)
+    
+    gui.isd_lbl9.configure(text = "Διαμέρισμα: ")
+    gui.isd_lbl9.place(x=940, y=400)
+    gui.isd_input9.place(x=1040, y=400)
+    
+    gui.isd_lbl10.configure(text = "Νομός: ")
+    gui.isd_lbl10.place(x=640, y=400)
+    gui.isd_input10.place(x=700, y=400)
+    
+    gui.isd_lbl11.configure(text = "Ενεργός από: ")
+    gui.isd_lbl11.place(x=640, y=460)
+    gui.isd_input11.place(x=740, y=460)
+    
+    gui.isd_lbl12.configure(text = "Τάση: ")
+    gui.isd_lbl12.place(x=940, y=460)
+    gui.isd_input12.place(x=1040, y=460)
+    
+    
+    gui.exe_btn.place(x=640, y = 560)
+    gui.exe_btn.configure(command = lambda: ExeInsertDiesp(gui))
+      
     return
+
+def InsertSubstation(gui):
+    
+    ClearRightGui(gui)
+    
+    gui.results_title.configure(text = "Δεδομένα εισαγωγής:")
+    
+    gui.isd_lbl1.configure(text = "ID: ")
+    gui.isd_lbl1.place(x=640, y=160)
+    gui.isd_input1.place(x=700, y=160)
+    
+    gui.isd_lbl2.configure(text = "Όνομα: ")
+    gui.isd_lbl2.place(x=940, y=160)
+    gui.isd_input2.place(x=1000, y=160)
+    
+    gui.isd_lbl3.configure(text = "Γεωγρ. Μήκος: ")
+    gui.isd_lbl3.place(x=640, y=220)
+    gui.isd_input3.place(x=740, y=220)
+    
+    gui.isd_lbl4.configure(text = "Γεωγρ. Πλάτος: ")
+    gui.isd_lbl4.place(x=940, y=220)
+    gui.isd_input4.place(x=1040, y=220)
+    
+    gui.isd_lbl5.configure(text = "Διαμέρισμα: ")
+    gui.isd_lbl5.place(x=640, y=280)
+    gui.isd_input5.place(x=740, y=280)
+    
+    gui.isd_lbl6.configure(text = "Νομός: ")
+    gui.isd_lbl6.place(x=940, y=280)
+    gui.isd_input6.place(x=1000, y=280)
+    
+    gui.isd_lbl7.configure(text = "Μετασχ. Τάσης: ")
+    gui.isd_lbl7.place(x=640, y=340)
+    gui.isd_input7.place(x=740, y=340)
+    
+    gui.isd_lbl8.configure(text = "Ενεργός Από: ")
+    gui.isd_lbl8.place(x=940, y=340)
+    gui.isd_input8.place(x=1040, y=340)
+    
+    gui.isd_lbl9.configure(text = "Συχνότητα: ")
+    gui.isd_lbl9.place(x=640, y=400)
+    gui.isd_input9.place(x=740, y=400)
+    
+    
+    gui.exe_btn.place(x=640, y = 460)
+    gui.exe_btn.configure(command = lambda: ExeInsertSubstation(gui))
+      
+    return
+
+def InsertArea(gui):
+    
+    ClearRightGui(gui)
+    
+    gui.results_title.configure(text = "Δεδομένα εισαγωγής:")
+    
+    gui.isd_lbl1.configure(text = "Περιοχή: ")
+    gui.isd_lbl1.place(x=640, y=160)
+    gui.isd_input1.place(x=700, y=160)
+    
+    gui.isd_lbl2.configure(text = "Τ.Κ.: ")
+    gui.isd_lbl2.place(x=940, y=160)
+    gui.isd_input2.place(x=1000, y=160)
+    
+    gui.isd_lbl3.configure(text = "Νομός: ")
+    gui.isd_lbl3.place(x=640, y=220)
+    gui.isd_input3.place(x=710, y=220)
+    
+    gui.isd_lbl4.configure(text = "Διαμέρισμα: ")
+    gui.isd_lbl4.place(x=940, y=220)
+    gui.isd_input4.place(x=1020, y=220)
+    
+    gui.isd_lbl5.configure(text = "Οικιακά Συμβόλαια: ")
+    gui.isd_lbl5.place(x=640, y=280)
+    gui.isd_input5.place(x=750, y=280)
+    
+    gui.isd_lbl6.configure(text = "Εταιρικά Συμβόλαια: ")
+    gui.isd_lbl6.place(x=940, y=280)
+    gui.isd_input6.place(x=1060, y=280)
+    
+    gui.isd_lbl7.configure(text = "Βιομηχ. Συμβόλαια: ")
+    gui.isd_lbl7.place(x=640, y=340)
+    gui.isd_input7.place(x=750, y=340)
+    
+    gui.isd_lbl8.configure(text = "Αγροτ. Συμβόλαια: ")
+    gui.isd_lbl8.place(x=940, y=340)
+    gui.isd_input8.place(x=1050, y=340)
+    
+    gui.isd_lbl9.configure(text = "ID Υποσταθμού: ")
+    gui.isd_lbl9.place(x=640, y=400)
+    gui.isd_input9.place(x=740, y=400)
+    
+    
+    gui.exe_btn.place(x=640, y = 460)
+    gui.exe_btn.configure(command = lambda: ExeInsertArea(gui))
+      
+    return
+
+def InsertCompany(gui):
+    
+    ClearRightGui(gui)
+    
+    gui.results_title.configure(text = "Δεδομένα εισαγωγής:")
+    
+    gui.isd_lbl1.configure(text = "ID: ")
+    gui.isd_lbl1.place(x=640, y=160)
+    gui.isd_input1.place(x=680, y=160)
+    
+    gui.isd_lbl2.configure(text = "Όνομα: ")
+    gui.isd_lbl2.place(x=940, y=160)
+    gui.isd_input2.place(x=980, y=160)
+    
+    gui.isd_lbl3.configure(text = "Έδρα: ")
+    gui.isd_lbl3.place(x=640, y=220)
+    gui.isd_input3.place(x=710, y=220)
+    
+    gui.isd_lbl4.configure(text = "ID Σταθμού: ")
+    gui.isd_lbl4.place(x=940, y=220)
+    gui.isd_input4.place(x=1020, y=220)
+        
+    
+    gui.exe_btn.place(x=640, y = 280)
+    gui.exe_btn.configure(command = lambda: ExeInsertCompany(gui))
+      
+    return
+
+def ExeInsertDiesp(gui):
+    
+    query = """ INSERT INTO `Διεσπαρμένη Παραγωγή` 
+           (`ID Μονάδας Παραγωγής`, `Όνομα Σταθμού`, `Εγκατεστημένη Ισχύς (MW)`,
+            `Μορφή Ενέργειας`, `Ενέργεια`, `Τεχνολογία`, `Γεωγρ. Μήκος`,
+            `Γεωγρ. Πλάτος`, `Διαμέρισμα`, `Νομός`, `Ενεργός Από:`, 
+            `Επίπεδο Τάσης Σύνδεσης (kV)`) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s); """
+           
+    values = (gui.isd_input1.get(),gui.isd_input2.get(),gui.isd_input3.get(),
+              gui.isd_input4.get(),gui.isd_input5.get(),gui.isd_input6.get(),
+              gui.isd_input7.get(),gui.isd_input8.get(),gui.isd_input9.get(),
+              gui.isd_input10.get(),gui.isd_input11.get(),gui.isd_input12.get())
+    
+    try:
+        cursor.execute(query, values)
+        
+    except (sql.Error, sql.Warning) as e:
+        error = str(e)
+        gui.isd_status.configure(text = "Σφάλμα: " + error[error.find('"')+1:error.rfind('"')])
+        gui.isd_status.place(x=640, y = 600)
+        return
+    
+    gui.isd_status.configure(text = "Η προσθήκη έγινε επιτυχώς!")
+    gui.isd_status.place(x=640, y = 600)
+    
+    return
+
+def ExeInsertSubstation(gui):
+    
+    query = """INSERT INTO `Τοπικός Υποσταθμός`
+            (`ID Υποσταθμού`, `Όνομα Σταθμού`, `Γεωγρ. Μήκος`, `Γεωγρ. Πλάτος`,
+             `Διαμέρισμα`, `Νομός`, `Μετασχηματισμός Τάσης`, `Ενεργός Από`,
+             `Συχνότητα (Hz)`)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s); """
+    
+    values = (gui.isd_input1.get(),gui.isd_input2.get(),gui.isd_input3.get(),
+              gui.isd_input4.get(),gui.isd_input5.get(),gui.isd_input6.get(),
+              gui.isd_input7.get(),gui.isd_input8.get(),gui.isd_input9.get())
+    
+    try:
+        cursor.execute(query, values)
+        
+    except (sql.Error, sql.Warning) as e:
+        error = str(e)
+        gui.isd_status.configure(text = "Σφάλμα: " + error[error.find('"')+1:error.rfind('"')])
+        gui.isd_status.place(x=640, y = 500)
+        return
+    
+    gui.isd_status.configure(text = "Η προσθήκη έγινε επιτυχώς!")
+    gui.isd_status.place(x=640, y = 500)
+    
+    return
+
+def ExeInsertArea(gui):
+    
+    query = """INSERT INTO `Κατανάλωση Περιοχής`
+            (`Περιοχή`, `Τ.Κ.`, `Νομός`, `Διαμέρισμα`,
+             `Οικιακά Συμβόλαια`, `Εταιρικά Συμβόλαια`, `Βιομηχανικά Συμβόλαια`,
+             `Αγροτικά Συμβόλαια`, `ID Βασικού Υποσταθμού`)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s); """
+            
+    values = (gui.isd_input1.get(),gui.isd_input2.get(),gui.isd_input3.get(),
+              gui.isd_input4.get(),gui.isd_input5.get(),gui.isd_input6.get(),
+              gui.isd_input7.get(),gui.isd_input8.get(),gui.isd_input9.get())
+    
+    try:
+        cursor.execute(query, values)
+        
+    except (sql.Error, sql.Warning) as e:
+        error = str(e)
+        gui.isd_status.configure(text = "Σφάλμα: " + error[error.find('"')+1:error.rfind('"')])
+        gui.isd_status.place(x=640, y = 500)
+        return
+    
+    gui.isd_status.configure(text = "Η προσθήκη έγινε επιτυχώς!")
+    gui.isd_status.place(x=640, y = 500)
+    
+    return
+    
+
+def ExeInsertCompany(gui):
+    
+    query = """INSERT INTO `Εταιρεία`
+            (`ID Εταιρείας`, `Όνομα Εταιρείας`, `Έδρα Εταιρείας`,
+             `ID Διεσπαρμένης παραγωγής`)
+            VALUES(%s, %s, %s, %s);"""
+            
+    values = (gui.isd_input1.get(),gui.isd_input2.get(),gui.isd_input3.get(),
+              gui.isd_input4.get())
+    
+    try:
+        cursor.execute(query, values)
+        
+    except (sql.Error, sql.Warning) as e:
+        error = str(e)
+        gui.isd_status.configure(text = "Σφάλμα: " + error[error.find('"')+1:error.rfind('"')])
+        gui.isd_status.place(x=640, y = 300)
+        return
+    
+    gui.isd_status.configure(text = "Η προσθήκη έγινε επιτυχώς!")
+    gui.isd_status.place(x=640, y = 300)
+    
+    return
+
 
 def get_companies_names():
     query = "SELECT DISTINCT `Όνομα Εταιρείας` " \
