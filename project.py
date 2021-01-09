@@ -187,8 +187,7 @@ class Gui():
         self.isd_input11 = tk.Entry(self.window)
         self.isd_input12 = tk.Entry(self.window)
 
-        self.exe_btn = tk.Button(self.window, text="Εκτέλεση",
-                                 command=lambda: ExecuteIsd(gui))
+        self.exe_btn = tk.Button(self.window, text="Εκτέλεση")
         self.isd_status = tk.Label(self.window)
 
         # Dataframe δεδομένων
@@ -984,16 +983,16 @@ def NetworkConnections(gui):
                FROM `Συνδέεται` s
                JOIN `Τοπικός Υποσταθμός` ty ON ty.`ID Υποσταθμού` = s.`ID Τοπικού Υποσταθμού`
                JOIN `Διεσπαρμένη Παραγωγή` dp ON dp.`ID Μονάδας Παραγωγής` = s.`ID Μονάδας Παραγωγής`
-               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού`,
-               `Σταθμός Παραγωγής`
-               LIMIT %s"""
+              WHERE ty.`Όνομα Σταθμού`= %s
+               ORDER BY `Τοπικός Υποσταθμός`, `Ενδιάμεσος Σταθμός Μετασχηματισμού` """
 
     gui.results.place(x=575, y=250)
     gui.results.configure(font=("Consolas", 8))
     PlaceFileButtons(gui)
-    ExecuteQuery_IntInput(query, gui.input4.get(), gui)
+    ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
 
     return
+
 
 
 def delete_ypo(gui):
@@ -1003,7 +1002,7 @@ def delete_ypo(gui):
     ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
     get_companies_names()
 
-   return
+    return
 
 #Queries Μέτρησης Κατανάλωσης
 def Consumption1Hr(gui):
@@ -1517,5 +1516,4 @@ if __name__ == '__main__':
     options6= getarea()
     options7=nomoi()
     StartMenu(cursor)
-
 
