@@ -1064,17 +1064,25 @@ def CountyConsumption1Hr(gui):
 
 
 def GreenConsumption(gui):
-    query = """SELECT kp.`Νομός` AS 'Νομός', 
-            SUM(mk.`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα',
-            SUM(mp.`Συνολική Μέτρηση (KWh)`) AS 'Παραγωγή σε 1 ώρα',
-            (SUM(mp.`Συνολική Μέτρηση (KWh)`)/SUM(mk.`Συνολική Κατανάλωση (KWh)`))*100
-            AS 'Ποσοστό Πράσινης Κατανάλωσης'
+    query = """SELECT green.`Νομός`, MAX(green.`Κατανάλωση-Παραγωγή`) AS 'Kατανάλωση σε 1 ώρα', 
+            MIN(green.`Κατανάλωση-Παραγωγή`) AS 'Παραγωγή σε 1 ώρα',
+            MIN(green.`Κατανάλωση-Παραγωγή`)/MAX(green.`Κατανάλωση-Παραγωγή`)*100
+            AS 'Ποσοστό "Πράσινης" Κατανάλωσης (%)'
+            FROM (
+            SELECT kp.`Νομός` AS 'Νομός', 
+            SUM(mk.`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση-Παραγωγή'
             FROM `Μέτρηση Κατανάλωσης` mk
             NATURAL JOIN `Κατανάλωση Περιοχής` kp
-            NATURAL JOIN `Διεσπαρμένη Παραγωγή` dp
-            NATURAL JOIN `Μέτρηση Παραγωγής` mp
             GROUP BY `Νομός`
-            ORDER BY `Νομός`"""
+            UNION (
+            SELECT dp.`Νομός` AS 'Νομός',
+            SUM(mp.`Συνολική Μέτρηση (KWh)`) 
+            FROM `Μέτρηση Παραγωγής` mp
+            NATURAL JOIN `Διεσπαρμένη Παραγωγή` dp
+            GROUP BY `Νομός`)
+            ORDER BY `Νομός`
+            ) green
+            GROUP BY green.`Νομός`"""
 
     gui.cursor.execute(query)
     data = cursor.fetchall()
@@ -1083,7 +1091,7 @@ def GreenConsumption(gui):
     PlaceFileButtons(gui)
     gui.results.configure(text=tabulate(gui.df, headers='keys', tablefmt='psql', showindex=False))
     gui.plot_btn.place(x=1010, y=150)
-    gui.axis_y = 'Ποσοστό Πράσινης Κατανάλωσης'
+    gui.axis_y = 'Ποσοστό "Πράσινης" Κατανάλωσης (%)'
     gui.axis_x = 'Νομός'
 
     return
