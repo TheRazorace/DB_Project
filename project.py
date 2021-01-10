@@ -655,7 +655,7 @@ def Diesp5(gui):  # Πληροφορίες Σταθμού
 
 
 def delete_diesp(gui): # Διαγραφή Σταθμού 
-    query = "SELECT `Όνομα Σταθμού` FROM `Διεσπαρμένη Παραγωγή` " \
+    query = "DELETE `Όνομα Σταθμού` FROM `Διεσπαρμένη Παραγωγή` " \
             "WHERE `Όνομα Σταθμού`=%s "
     ##PlaceFileButtons(gui)
     ExecuteQuery_StrInput(query, gui.clicked2.get(), gui)
@@ -750,7 +750,7 @@ def Etaireia5(gui):  # Επιλογή Στοιχείων Εταιρείας
 
 
 def delete_etairia(gui):  # Διαγραφή εταιρείας
-    query = "SELECT `Όνομα Εταιρείας` FROM `Εταιρεία` " \
+    query = "DELETE `Όνομα Εταιρείας` FROM `Εταιρεία` " \
             "WHERE `Εταιρεία`.`Όνομα Εταιρείας`=%s "
     ExecuteQuery_StrInput(query, gui.clicked4.get(), gui)
     gui.isd_status.configure(text="Η Διαγραφή έγινε επιτυχώς!")
@@ -919,7 +919,7 @@ def AreaStation(gui): #Βασικός υποσταθμός δικτύου δια
 
 
 def delete_area(gui): #Διαγραφή Περιοχής
-    query = "SELECT `Περιοχή`  FROM `Κατανάλωση Περιοχής` " \
+    query = "DELETE `Περιοχή`  FROM `Κατανάλωση Περιοχής` " \
             "WHERE `Κατανάλωση Περιοχής`.`Περιοχή`=%s "
     ##PlaceFileButtons(gui)
     ExecuteQuery_StrInput(query, gui.clicked6.get(), gui)
@@ -998,7 +998,7 @@ def NetworkConnections(gui): # Στοιχεία δικτύου για κάθε �
 
 
 def delete_ypo(gui): # Διαγραφή τοπικού υποσταθμού
-    query = "SELECT `Τοπικός Υποσταθμός`.`Όνομα Σταθμού`  FROM `Τοπικός Υποσταθμός` " \
+    query = "DELETE `Τοπικός Υποσταθμός`.`Όνομα Σταθμού`  FROM `Τοπικός Υποσταθμός` " \
             "WHERE `Τοπικός Υποσταθμός`.`Όνομα Σταθμού`=%s "
     ##PlaceFileButtons(gui)
     ExecuteQuery_StrInput(query, gui.clicked5.get(), gui)
@@ -1344,7 +1344,7 @@ def InsertCompany(gui):
     gui.isd_lbl3.place(x=640, y=220)
     gui.isd_input3.place(x=710, y=220)
 
-    gui.isd_lbl4.configure(text="ID Σταθμού: ")
+    gui.isd_lbl4.configure(text="Σταθμός: ")
     gui.isd_lbl4.place(x=940, y=220)
     # gui.isd_input4.place(x=1020, y=220)
     gui.dropmn2.place(x=1020, y=220)
