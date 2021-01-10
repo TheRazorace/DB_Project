@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+#Απαραίτητες βιβλιοθήκες
 import pymysql as sql
 import pymysql.cursors as cur
 import pandas as pd
@@ -62,7 +63,6 @@ class Gui():
         self.dropmn2 = tk.OptionMenu(self.window, self.clicked2, *options2)
 
         # Time
-
         options3 = ["12:00:00", "12:15:00", "12:30:00", "12:45:00"]
         self.clicked3 = tk.StringVar()
         self.clicked3.set("12:00:00")
@@ -100,6 +100,7 @@ class Gui():
         self.label4 = tk.Label(self.window, font=("Arial", 7))
         self.label5 = tk.Label(self.window, font=("Arial", 7))
         #       self.labelDelete=tk.Label(self.window, font=("Arial", 7))
+        
         # Inputs που ίσως χρειαστούν
         self.input1 = tk.Entry(self.window, width=20)
         self.input2 = tk.Entry(self.window, width=20)
@@ -215,8 +216,6 @@ def StartMenu(cursor):
 # Κατηγορίες queries
 # Κάθε κουμπί στα δεξιά οδηγεί σε μία από τις κατηγορίες των queries
 # Σε κάθε query κουμπί ρυθμίζεται εκ νέου το κείμενό του και η συνάρτηση που καλεί
-# Σε κάθε query κουμπί ρυθμίζεις τι θες να έχουν μέσα τα labels και τα inputs
-# με την εντολή configure. Αλλιώς τα κάνεις place_forget() για να μην φαίνονται
 
 # Queries Διεσπαρμένης Παραγωγής
 def ProductionQueries(gui):
@@ -336,14 +335,6 @@ def AreaQueries(gui):
     gui.query4.place(x=280, y=340)
     gui.dropmn6.place(x=280, y=370)
 
-    # gui.label4.configure(text="Περιοχή αναζήτησης: ")
-    # gui.label4.place(x=280, y=370)
-    # gui.input4.insert(10, 'Πάτρα - Κέντρο')
-    # gui.input4.place(x=375, y=370)
-
-    # gui.query5.configure(text = "Query περιοχής 5")
-    # gui.query5.place(x=350, y=500)
-
     return
 
 
@@ -425,7 +416,7 @@ def SubstationQueries(gui):
     return
 
 
-# Insert Queries
+# Queries Εισαγωγής Δεδομένων
 def InsertQuery(gui):
     ClearCentralGui(gui)
 
@@ -448,7 +439,7 @@ def InsertQuery(gui):
     return
 
 
-# Delete Queries
+# Queries Διαγραφής Δεδομένων
 def DeleteQuery(gui):
     ClearCentralGui(gui)
 
@@ -474,7 +465,7 @@ def DeleteQuery(gui):
 
     return
 
-# Καθαρισμός οθόνης
+# Καθαρισμός κεντρικής οθόνης
 def ClearCentralGui(gui):
     # Κρύψιμο των κουμπιών
     gui.query1.place_forget()
@@ -537,12 +528,15 @@ def ClearCentralGui(gui):
     gui.csv_input.place_forget()
     gui.html_input.place_forget()
 
+    # Κρύψιμο της δεξιάς πλευράς του gui
     ClearRightGui(gui)
 
     return
 
-
+# Καθαρισμός της δεξίας πλευράς του gui
 def ClearRightGui(gui):
+    
+    # Καθαρισμός labels εισαγωγής στοιχείων
     gui.isd_lbl1.place_forget()
     gui.isd_lbl2.place_forget()
     gui.isd_lbl3.place_forget()
@@ -555,10 +549,12 @@ def ClearRightGui(gui):
     gui.isd_lbl10.place_forget()
     gui.isd_lbl11.place_forget()
     gui.isd_lbl12.place_forget()
-
+    
+    # Καθαρισμός dropdown
     gui.dropmn2.place_forget()
     gui.dropmn8.place_forget()
 
+    # Καθαρισμός πεδίων εισαγωγής δεδομένων
     gui.isd_input1.place_forget()
     gui.isd_input2.place_forget()
     gui.isd_input3.place_forget()
@@ -572,6 +568,7 @@ def ClearRightGui(gui):
     gui.isd_input11.place_forget()
     gui.isd_input12.place_forget()
 
+    # Καθαρισμός περιεχομένων πεδίων εισαγωγής δεδομένων
     gui.isd_input1.delete(0, tk.END)
     gui.isd_input2.delete(0, tk.END)
     gui.isd_input3.delete(0, tk.END)
@@ -585,6 +582,7 @@ def ClearRightGui(gui):
     gui.isd_input11.delete(0, tk.END)
     gui.isd_input12.delete(0, tk.END)
 
+    # Καθαρισμός κουμπιού εκτέλεσης query 
     gui.exe_btn.place_forget()
     gui.isd_status.place_forget()
 
@@ -637,7 +635,7 @@ def Diesp3(gui):  # Αριθμός Σταθμών ΑΠΕ ανά Νομό
     return
 
 
-def Diesp4(gui):
+def Diesp4(gui): # Σταθμοί ανά έτος αρχής λειτουργείας 
     query = "SELECT   `Όνομα Σταθμού` ,`Ενέργεια` ,`Νομός` ,`Εγκατεστημένη Ισχύς (MW)` " \
             "FROM `Διεσπαρμένη Παραγωγή` " \
             "WHERE   YEAR(`Ενεργός Από:`) <= %s  " \
@@ -656,7 +654,7 @@ def Diesp5(gui):  # Πληροφορίες Σταθμού
     return
 
 
-def delete_diesp(gui):
+def delete_diesp(gui): # Διαγραφή Σταθμού 
     query = "SELECT `Όνομα Σταθμού` FROM `Διεσπαρμένη Παραγωγή` " \
             "WHERE `Όνομα Σταθμού`=%s "
     ##PlaceFileButtons(gui)
@@ -718,7 +716,7 @@ def Etaireia3(gui):  # Ταξινόμηση εταιρειών με βάση τ�
     return
 
 
-def Etaireia4(gui):  # Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
+def Etaireia4(gui):  # Εταιρείες βάσει της εγκατεστημένης ισχύος στον σταθμό της
     query = "SELECT `Όνομα Εταιρείας` , `Εγκατεστημένη Ισχύς (MW)` , `Ενέργεια` " \
             "FROM `Εταιρεία` JOIN `Διεσπαρμένη Παραγωγή` " \
             "on `ID Διεσπαρμένης Παραγωγής`= `ID Μονάδας Παραγωγής`" \
@@ -737,7 +735,7 @@ def Etaireia4(gui):  # Ταξινόμηση ανα έργο ίσως και αν
     return
 
 
-def Etaireia5(gui):  # Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
+def Etaireia5(gui):  # Επιλογή Στοιχείων Εταιρείας
     query = "SELECT `Όνομα Σταθμού`,`Εγκατεστημένη Ισχύς (MW)` , `Ενέργεια` , `Νομός` " \
             "FROM `Εταιρεία` JOIN `Διεσπαρμένη Παραγωγή` " \
             "on `ID Διεσπαρμένης Παραγωγής`= `ID Μονάδας Παραγωγής`" \
@@ -751,7 +749,7 @@ def Etaireia5(gui):  # Ταξινόμηση ανα έργο ίσως και αν
     return
 
 
-def delete_etairia(gui):  # Ταξινόμηση ανα έργο ίσως και ανα περιοχή ??
+def delete_etairia(gui):  # Διαγραφή εταιρείας
     query = "SELECT `Όνομα Εταιρείας` FROM `Εταιρεία` " \
             "WHERE `Εταιρεία`.`Όνομα Εταιρείας`=%s "
     ExecuteQuery_StrInput(query, gui.clicked4.get(), gui)
@@ -828,7 +826,7 @@ def Production4(gui):  # Ποσοστό Προέλευσης Ενέργειας
     return
 
 
-def Production5(gui):
+def Production5(gui): #Συνολική Παραγωγή ανά μορφή Ενέργειας
     query = "SELECT SUM(`Μέτρηση Παραγωγής`.`Συνολική Μέτρηση (KWh)`) as `Παραγώμενη Ενέργεια (KW)` ,`Διεσπαρμένη Παραγωγή`.`Ενέργεια`" \
             ", SUM(`Μέτρηση Παραγωγής`.`Συνολική Μέτρηση (KWh)`)/ (SELECT  SUM(`Μέτρηση Παραγωγής`.`Συνολική Μέτρηση (KWh)`) "\
             "FROM `Μέτρηση Παραγωγής` JOIN `Διεσπαρμένη Παραγωγή` "\
@@ -853,7 +851,8 @@ def Production5(gui):
 
 
 # Queries Κατανάλωσης Περιοχής
-def AreaAllContracts(gui):
+
+def AreaAllContracts(gui): #Τα συμβόλαια κατανάλωσης κάθε περιοχής
     query = """SELECT `Περιοχή`,`Τ.Κ.`,`Νομός`,`Διαμέρισμα`,
             SUM(`Οικιακά Συμβόλαια`) + SUM(`Εταιρικά Συμβόλαια`) + 
             SUM(`Βιομηχανικά Συμβόλαια`) + SUM(`Αγροτικά Συμβόλαια`) AS `Συμβόλαια`
@@ -872,7 +871,7 @@ def AreaAllContracts(gui):
     return
 
 
-def AreaIndustrialContracts(gui):
+def AreaIndustrialContracts(gui): #Τα βιομηχανικά συμβόλαια κάθε περιοχής
     query = """SELECT `Περιοχή`,`Τ.Κ.`,`Νομός`,`Διαμέρισμα`, `Βιομηχανικά Συμβόλαια`
             FROM `Κατανάλωση Περιοχής`
             GROUP BY `Περιοχή`
@@ -888,7 +887,7 @@ def AreaIndustrialContracts(gui):
     return
 
 
-def AreaAgriContracts(gui):
+def AreaAgriContracts(gui): #Τα αγροτικά συμβόλαια κάθε περιοχής
     query = """SELECT `Περιοχή`,`Τ.Κ.`,`Νομός`,`Διαμέρισμα`, `Αγροτικά Συμβόλαια`
             FROM `Κατανάλωση Περιοχής`
             GROUP BY `Περιοχή`
@@ -904,7 +903,7 @@ def AreaAgriContracts(gui):
     return
 
 
-def AreaStation(gui):
+def AreaStation(gui): #Βασικός υποσταθμός δικτύου διανομής κάθε περιοχής
     query = """SELECT kp.`Περιοχή`,kp.`Τ.Κ.`, ty.`Όνομα Σταθμού` AS `Βασικός Υποσταθμός Περιοχής` 
             FROM `Κατανάλωση Περιοχής` kp 
             JOIN `Τοπικός Υποσταθμός` ty ON kp.`ID Βασικού Υποσταθμού` = ty.`ID Υποσταθμού`
@@ -919,7 +918,7 @@ def AreaStation(gui):
     return
 
 
-def delete_area(gui):
+def delete_area(gui): #Διαγραφή Περιοχής
     query = "SELECT `Περιοχή`  FROM `Κατανάλωση Περιοχής` " \
             "WHERE `Κατανάλωση Περιοχής`.`Περιοχή`=%s "
     ##PlaceFileButtons(gui)
@@ -929,7 +928,8 @@ def delete_area(gui):
 
 
 # Queries Τοπικού Υποσταθμού
-def CommonStations(gui):
+
+def CommonStations(gui): #Τοπικοί Υποσταθμοί για κοινή χρήση
     query = """SELECT `Όνομα Σταθμού`,`Γεωγρ. Μήκος`,`Γεωγρ. Πλάτος`,`Ενεργός Από` 
             FROM `Τοπικός Υποσταθμός` 
             WHERE `Μετασχηματισμός Τάσης` = '20KV/400V'
@@ -943,7 +943,7 @@ def CommonStations(gui):
     return
 
 
-def IndustrialStations(gui):
+def IndustrialStations(gui): #Τοπικοί Υποσταθμοί για βιομηχανική χρήση
     query = """SELECT `Όνομα Σταθμού`,`Γεωγρ. Μήκος`,`Γεωγρ. Πλάτος`,`Ενεργός Από` 
             FROM `Τοπικός Υποσταθμός` 
             WHERE `Μετασχηματισμός Τάσης` != '20KV/400V'
@@ -957,7 +957,7 @@ def IndustrialStations(gui):
     return
 
 
-def StationsSort(gui):
+def StationsSort(gui): #Αριθμός πελατών που εξυπηρετεί κάθε σταθμός
     query = """SELECT ty.`Όνομα Σταθμού`, ty.`Γεωγρ. Μήκος`, ty.`Γεωγρ. Πλάτος`, ty.`Ενεργός Από`,
                SUM(pk.`Αγροτικά Συμβόλαια`) + SUM(pk.`Οικιακά Συμβόλαια`) +
                SUM(pk.`Εταιρικά Συμβόλαια`) + SUM(pk.`Βιομηχανικά Συμβόλαια`) AS 'Αριθμός Πελατών'
@@ -979,7 +979,7 @@ def StationsSort(gui):
     return
 
 
-def NetworkConnections(gui):
+def NetworkConnections(gui): # Στοιχεία δικτύου για κάθε σταθμό
     query = """SELECT ty.`Όνομα Σταθμού` AS 'Τοπικός Υποσταθμός', 
         	   s.`Όνομα` AS 'Ενδιάμεσος Σταθμός Μετασχηματισμού',
                dp.`Όνομα Σταθμού` AS 'Σταθμός Παραγωγής'
@@ -997,7 +997,7 @@ def NetworkConnections(gui):
     return
 
 
-def delete_ypo(gui):
+def delete_ypo(gui): # Διαγραφή τοπικού υποσταθμού
     query = "SELECT `Τοπικός Υποσταθμός`.`Όνομα Σταθμού`  FROM `Τοπικός Υποσταθμός` " \
             "WHERE `Τοπικός Υποσταθμός`.`Όνομα Σταθμού`=%s "
     ##PlaceFileButtons(gui)
@@ -1008,7 +1008,8 @@ def delete_ypo(gui):
 
 
 # Queries Μέτρησης Κατανάλωσης
-def Consumption1Hr(gui):
+
+def Consumption1Hr(gui): #Συνολική κατανάλωση σε 1 ώρα
     query = """SELECT `Περιοχή`, 
                SUM(`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα'
                FROM `Μέτρηση Κατανάλωσης` 
@@ -1025,7 +1026,7 @@ def Consumption1Hr(gui):
     return
 
 
-def Consumption15min(gui):
+def Consumption15min(gui): #Συνολική κατανάλωση σε 15 λεπτά
     query = """SELECT `Περιοχή`, 
                AVG(`Συνολική Κατανάλωση (KWh)`) AS 'Μέση Κατανάλωση ανά 15 λεπτά'
                FROM `Μέτρηση Κατανάλωσης` 
@@ -1042,7 +1043,7 @@ def Consumption15min(gui):
     return
 
 
-def CountyConsumption1Hr(gui):
+def CountyConsumption1Hr(gui): # Συνολική κατανάλωση ανά νομό σε 1 ώρα
     query = """SELECT kp.`Νομός`, 
             SUM(mk.`Συνολική Κατανάλωση (KWh)`) AS 'Κατανάλωση σε 1 ώρα'
             FROM `Μέτρηση Κατανάλωσης` mk
@@ -1063,7 +1064,7 @@ def CountyConsumption1Hr(gui):
     return
 
 
-def GreenConsumption(gui):
+def GreenConsumption(gui): # Ποσοστό πράσινης κατανάλωσης νομών
     query = """SELECT green.`Νομός`, MAX(green.`Κατανάλωση-Παραγωγή`) AS 'Kατανάλωση σε 1 ώρα', 
             MIN(green.`Κατανάλωση-Παραγωγή`) AS 'Παραγωγή σε 1 ώρα',
             MIN(green.`Κατανάλωση-Παραγωγή`)/MAX(green.`Κατανάλωση-Παραγωγή`)*100
@@ -1096,7 +1097,7 @@ def GreenConsumption(gui):
 
     return
 
-
+# Εκτέλεση query με αριθμητική είσοδο
 def ExecuteQuery_IntInput(query, query_input, gui):
     entry = query_input
     if not entry.isdigit():
@@ -1113,7 +1114,7 @@ def ExecuteQuery_IntInput(query, query_input, gui):
 
     return
 
-
+# Εκτέλεση query με αλφαρηθμιτική είσοδο
 def ExecuteQuery_StrInput(query, query_input, gui):
     entry = query_input
     gui.cursor.execute(query, str(entry))
@@ -1122,7 +1123,7 @@ def ExecuteQuery_StrInput(query, query_input, gui):
     PrintResults(gui, gui.df)
     return
 
-
+# Εκτύπωση αποτελεσμάτων
 def PrintResults(gui, df):
     if (len(df) > 0):
         gui.results_title.configure(text="Αποτελέσματα Αναζήτησης: ")
@@ -1133,14 +1134,14 @@ def PrintResults(gui, df):
 
     return
 
-
+# Εμφάνιση γραφήματος
 def ShowPlot(df, axis_x, axis_y):
     df[axis_x] = ['\n'.join(wrap(x, 12)) for x in df[axis_x]]
     df.plot.bar(x=axis_x, y=axis_y, rot=0, figsize=(15, 10), fontsize=10)
 
     return
 
-
+# Αποθήκευση αποτελεσμάτων σε csv αρχείο
 def SaveAsCsv(df, filename):
     compression_opts = dict(method='zip', archive_name=filename + '.csv')
     df.to_csv(filename + '.zip', index=False,
@@ -1148,7 +1149,7 @@ def SaveAsCsv(df, filename):
 
     return
 
-
+# Αποθήκευση αποτελεσμάτων σε html αρχείο σε μορφή πίνακα html
 def SaveAsHtml(df, filename):
     html = df.to_html()
     text_file = open(filename, "w")
@@ -1157,7 +1158,7 @@ def SaveAsHtml(df, filename):
 
     return
 
-
+# Τοποθέτηση κουμπιών αποθήκευσης δεδομένων
 def PlaceFileButtons(gui):
     gui.csv_btn.place(x=610, y=150)
     gui.csv_lbl.place(x=610, y=177)
@@ -1171,7 +1172,7 @@ def PlaceFileButtons(gui):
 
     return
 
-
+# Στοιχεία εισαγωγής νέων στοιχέιων στην Διεσπαρμένη Παραγωγή
 def InsertDiesp(gui):
     ClearRightGui(gui)
 
@@ -1230,7 +1231,7 @@ def InsertDiesp(gui):
 
     return
 
-
+# Στοιχεία εισαγωγής νέων στοιχέιων στον Τοπικό Υποσταθμό
 def InsertSubstation(gui):
     ClearRightGui(gui)
 
@@ -1277,7 +1278,7 @@ def InsertSubstation(gui):
 
     return
 
-
+# Στοιχεία εισαγωγής νέων στοιχέιων στην Κατανάλωση Περιοχής
 def InsertArea(gui):
     ClearRightGui(gui)
 
@@ -1325,7 +1326,7 @@ def InsertArea(gui):
 
     return
 
-
+# Στοιχεία εισαγωγής νέων στοιχέιων στην Εταιρεία
 def InsertCompany(gui):
     ClearRightGui(gui)
 
@@ -1354,7 +1355,7 @@ def InsertCompany(gui):
 
     return
 
-
+# Εκτέλεση εισαγωγής στην Διεσπαρμένη Παραγωγή
 def ExeInsertDiesp(gui):
     query = """ INSERT INTO `Διεσπαρμένη Παραγωγή` 
            (`ID Μονάδας Παραγωγής`, `Όνομα Σταθμού`, `Εγκατεστημένη Ισχύς (MW)`,
@@ -1382,7 +1383,7 @@ def ExeInsertDiesp(gui):
 
     return
 
-
+# Εκτέλεση εισαγωγής στον Τοπικό Υποσταθμό
 def ExeInsertSubstation(gui):
     query = """INSERT INTO `Τοπικός Υποσταθμός`
             (`ID Υποσταθμού`, `Όνομα Σταθμού`, `Γεωγρ. Μήκος`, `Γεωγρ. Πλάτος`,
@@ -1408,7 +1409,7 @@ def ExeInsertSubstation(gui):
 
     return
 
-
+# Εκτέλεση εισαγωγής στην Κατανάλωση Περιοχής
 def ExeInsertArea(gui):
     query = """INSERT INTO `Κατανάλωση Περιοχής`
             (`Περιοχή`, `Τ.Κ.`, `Νομός`, `Διαμέρισμα`,
@@ -1434,7 +1435,7 @@ def ExeInsertArea(gui):
 
     return
 
-
+# Εκτέλεση εισαγωγής στην Εταιρεία
 def ExeInsertCompany(gui):
     query = """INSERT INTO `Εταιρεία`
             (`ID Εταιρείας`, `Όνομα Εταιρείας`, `Έδρα Εταιρείας`,
@@ -1458,7 +1459,7 @@ def ExeInsertCompany(gui):
 
     return
 
-
+# Αποθήκευση ονομάτων εταιρείας για χρήση σε dropdown menu
 def get_companies_names():
     query = "SELECT DISTINCT `Όνομα Εταιρείας` " \
             "FROM `Εταιρεία`" \
@@ -1470,6 +1471,7 @@ def get_companies_names():
     return opt
 
 
+# Αποθήκευση ονομάτων σταθμών παραγωγής για χρήση σε dropdown menu
 def get_station_names():
     query = "SELECT DISTINCT `Όνομα Σταθμού` " \
             "FROM `Διεσπαρμένη Παραγωγή`" \
@@ -1481,6 +1483,7 @@ def get_station_names():
     return opt1
 
 
+# Αποθήκευση ονομάτων τοπικών υποσταθμών για χρήση σε dropdown menu
 def getsubstation_name():
     query = "SELECT DISTINCT `Όνομα Σταθμού` " \
             "FROM `Τοπικός Υποσταθμός`" \
@@ -1492,6 +1495,7 @@ def getsubstation_name():
     return opt2
 
 
+# Αποθήκευση ονομάτων περιοχών για χρήση σε dropdown menu
 def getarea():
     query = "SELECT DISTINCT `Περιοχή` " \
             "FROM `Κατανάλωση Περιοχής`" \
@@ -1502,7 +1506,7 @@ def getarea():
     opt3 = dataframe['Περιοχή'].values.tolist()
     return opt3
 
-
+# Αποθήκευση ονομάτων νομών για χρήση σε dropdown menu
 def nomoi():
     query = "SELECT DISTINCT `Νομός` " \
             "FROM `Διεσπαρμένη Παραγωγή`" \
@@ -1513,6 +1517,7 @@ def nomoi():
     opt4 = dataframe['Νομός'].values.tolist()
     return opt4
 
+# Αποθήκευση ids τοπικών υποσταθμών για χρήση σε dropdown menu
 def id():
     query = "SELECT `ID Υποσταθμού` " \
             "FROM `Τοπικός Υποσταθμός`" \
@@ -1524,7 +1529,7 @@ def id():
     opt5 = dataframe['ID Υποσταθμού'].values.tolist()
     return opt5
 
-
+# Κύρια συνάρτηση
 if __name__ == '__main__':
     cursor = ConnectDatabase()
     options2 = get_station_names()
