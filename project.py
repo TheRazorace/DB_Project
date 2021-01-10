@@ -820,7 +820,7 @@ def Production4(gui):  # Ποσοστό Προέλευσης Ενέργειας
     PlaceFileButtons(gui)
     gui.results.configure(text=tabulate(gui.df, headers='keys', tablefmt='psql', showindex=False))
     gui.plot_btn.place(x=1010, y=150)
-    gui.axis_y = 'Ποσοστό Συνολικής Παραγωγής'
+    gui.axis_y = 'Ποσοστό Συνολικής Παραγωγής %'
     gui.axis_x = 'Είδος Ενέργειας'
 
     return
